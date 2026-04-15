@@ -8,7 +8,7 @@ import com.hexaware.BankCRUD.dao.CustomerDao;
 import com.hexaware.BankCRUD.model.Customer;
 
 public class CustomerService {
-	@Autowired
+	
 	private CustomerDao customerDao;
 
 	

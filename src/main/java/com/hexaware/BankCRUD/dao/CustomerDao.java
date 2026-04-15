@@ -9,7 +9,7 @@ import com.hexaware.BankCRUD.model.Customer;
 
 public class CustomerDao {
 	
-	@Autowired
+	
 	private JdbcTemplate jdbcTemplate;
 	
 	public CustomerDao(JdbcTemplate jdbcTemplate) {
