@@ -52,7 +52,10 @@ public class CustomerService {
 	}
 	
 	public void getCustomerByAccountNo(int accountNo) {
-		customerDao.getCustomerByAccountNo(accountNo);
+		Customer customer = customerDao.getCustomerByAccountNo(accountNo);
+		if(customer!=null) {
+			System.out.println(customer);
+		}
 	}
 	
 	

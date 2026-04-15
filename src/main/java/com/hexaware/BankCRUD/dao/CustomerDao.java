@@ -34,31 +34,64 @@ public class CustomerDao {
 	}
 	
 	public void depositAmount(int accountNo,double amount) {
-		int r = jdbcTemplate.update("update customer set balance=balance+? where accountNo=?",amount,accountNo);
-		if(r>0) {
-			System.out.println("Successfully Deposited Amount!");
+		
+		Customer c = getCustomerByAccountNo(accountNo);
+		if(c!=null) {
+			if(amount<0) {
+				System.out.println("Invalid Amount");
+			}else {
+				int r = jdbcTemplate.update("update customer set balance=balance+? where accountNo=?",amount,accountNo);
+				if(r>0) {
+					System.out.println("Successfully Deposited Amount!");
+				}else {
+					System.out.println("Failed to Deposit Amount!");
+				}
+			}
 		}else {
-			System.out.println("Failed to Deposit Amount!");
+			System.out.println("Account Not Found!");
 		}
+		
 	}
 	
 	public void withdrawAmount(int accountNo,double amount) {
-		int r = jdbcTemplate.update("update customer set balance=balance-? where accountNo=?",amount,accountNo);
-		if(r>0) {
-			System.out.println("Successfully Withdrawn Amount!");
+		
+		
+		Customer c = getCustomerByAccountNo(accountNo);
+		if(c!=null) {
+			if(c.getBalance()<amount) {
+				System.out.println("Insufficient Funds!");
+			}else {
+				int r = jdbcTemplate.update("update customer set balance=balance-? where accountNo=?",amount,accountNo);
+				if(r>0) {
+					System.out.println("Successfully Withdrawn Amount!");
+				}else {
+					System.out.println("Failed to Withdraw Amount!");
+				}
+			}
 		}else {
-			System.out.println("Failed to Withdraw Amount!");
+			System.out.println("Account Not Found!");
 		}
 	}
 	
 	public void transferAmount(int sender,int receiver,double amount) {
-		int r1 = jdbcTemplate.update("update customer set balance=balance-? where accountNo=?",amount,sender);
-		int r2 = jdbcTemplate.update("update customer set balance=balance+? where accountNo=?",amount,receiver);
-		if(r1>0&&r2>0) {
-			System.out.println("Amount transferred Successfully!");
+		Customer s = getCustomerByAccountNo(sender);
+		Customer r = getCustomerByAccountNo(receiver);
+		if(s!=null&&r!=null) {
+			if(s.getBalance()<amount) {
+				System.out.println("Insufficient Funds!");
+			}else {
+				int r1 = jdbcTemplate.update("update customer set balance=balance-? where accountNo=?",amount,sender);
+				int r2 = jdbcTemplate.update("update customer set balance=balance+? where accountNo=?",amount,receiver);
+				if(r1>0&&r2>0) {
+					System.out.println("Amount transferred Successfully!");
+				}else {
+					System.out.println("Amount Transfer Failed!");
+				}
+			}
 		}else {
-			System.out.println("Amount Transfer Failed!");
+			System.out.println("Account Not Found!");
 		}
+		
 	}
 	
 	public void showAllCustomers() {
@@ -69,12 +102,14 @@ public class CustomerDao {
 		}
 	}
 	
-	public void getCustomerByAccountNo(int accountNo) {
+	public Customer getCustomerByAccountNo(int accountNo) {
 		List<Customer> customers = jdbcTemplate.query("select * from customer where accountNo=?", (rs,rowNum)->new Customer(rs.getInt("customerId"),rs.getString("customerName"),rs.getInt("accountNo"),rs.getDouble("balance")),accountNo);
 		if(customers.size()==0) {
 			System.out.println("No Customer Found!");
+			return null;
 		}else {
-			System.out.println(customers.get(0));
+			
+			return customers.get(0);
 		}
 	}
 	

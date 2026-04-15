@@ -91,14 +91,8 @@ public class App
         }
     }
 	
-	public void setCustomerService(CustomerService customerService) {
-		this.customerService = customerService;
-	}
 
-	public App() {
-		super();
-		
-	}
+
 	
 	
     
